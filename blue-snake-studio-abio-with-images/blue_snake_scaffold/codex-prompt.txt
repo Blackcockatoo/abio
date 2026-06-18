@@ -1,0 +1,29 @@
+You are editing a React/Vite scaffold for The Moss Man / Blue $nake Studio / B$S.
+
+Goal: keep the new scaffold structure, but preserve the useful content from the old `Blackcockatoo/abio` repo.
+
+Keep these core strands visible on the home page:
+- Meta-Pet: privacy-first, offline/local-first, zero-data-collecting STEAM learning companion for children and classrooms.
+- Moss 60: original visual mathematics / digital DNA / symbolic number system using 60, 108, 360 cycles, uniqueness and hepta-encryption concepts.
+- Auralia / Visual Identity: gold-on-blue mythic B$S direction, black cockatoo, snake geometry, poster/sticker/lyric-sheet branding.
+- Black Wing Crew / Neon Venom: dark chant, black birds, black butterflies, omen hooks, taiko, row/oars call-and-response, lyric posters and QR campaigns.
+- Teacher’s Secret Cheatsheet: teacher support material, behaviour support planning, duties of care, resilience, early-years behavioural support.
+- The Grammarian’s Coup Memetic Lexicon: framing, repetition, memetics, hidden grammar, language influence and social pattern detection.
+
+Technical notes:
+- Main page is `client/src/pages/Home.tsx`.
+- Main styling additions are at the bottom of `client/src/index.css`.
+- Avoid external image dependencies unless the images are inside `client/public`.
+- Keep the site deployable to Vercel/Netlify/GitHub without broken CloudFront assets.
+- Keep contact as `bluesssnakestudio@gmail.com` and `blkck2@gmail.com`.
+- Keep project links:
+  - https://www.bluesnakestudios.com/
+  - https://blackwingcrew.netlify.app/
+  - https://www.youtube.com/@blkck2
+  - https://elevator-pitch-seven.vercel.app/
+
+Tone: mythic but practical. Pirate wizard energy, but still credible enough for schools, teachers, collaborators and creative opportunities.
+
+IMAGE ASSET NOTE:
+The scaffold includes local SVG assets in `client/public/assets`. Keep image paths as `/assets/<filename>.svg` so Vite serves them correctly. Build future sections around these assets before adding remote images. If replacing with user photos/artworks later, keep filenames semantic and update `docs/IMAGE-ASSETS.md`.
+
