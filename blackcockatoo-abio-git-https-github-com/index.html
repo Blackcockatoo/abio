@@ -1,0 +1,1323 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Moss Man / B$S — Moss Tree</title>
+  <meta name="description" content="The Moss Man and Blue $nake Studio: Meta-Pet, Moss 60, Semantic Sovereignty, Black Omen, Black Wing Crew and mythic visual worlds.">
+  <meta name="theme-color" content="#04101a">
+  <meta name="application-name" content="Moss Tree">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Moss Tree">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta property="og:title" content="The Moss Man / B$S — Moss Tree">
+  <meta property="og:description" content="Patterns, worlds, creatures and stories from Blue $nake Studio.">
+  <style>
+    :root {
+      --night: #02070d;
+      --navy: #04101d;
+      --navy-2: #071b2c;
+      --ink: #f4f0e4;
+      --muted: #94a6b4;
+      --dim: #4e6575;
+      --gold: #e7c767;
+      --gold-hot: #fff1a8;
+      --blue: #78d6f7;
+      --line: rgba(120, 214, 247, .28);
+      --active: 0;
+      --ease: cubic-bezier(.22, .78, .2, 1);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; min-height: 100%; }
+    html { background: var(--night); }
+    body {
+      margin: 0;
+      overflow: hidden;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 16% 18%, rgba(38, 105, 146, .16), transparent 28rem),
+        radial-gradient(circle at 86% 80%, rgba(231, 199, 103, .08), transparent 26rem),
+        linear-gradient(145deg, var(--navy-2), var(--night) 58%);
+      font-family: "Segoe UI", Inter, system-ui, -apple-system, sans-serif;
+      font-size: 16px;
+      line-height: 1.55;
+      letter-spacing: .012em;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+    body::before {
+      opacity: .24;
+      background-image:
+        linear-gradient(30deg, transparent 49.7%, rgba(120, 214, 247, .09) 50%, transparent 50.3%),
+        linear-gradient(150deg, transparent 49.7%, rgba(120, 214, 247, .055) 50%, transparent 50.3%);
+      background-size: 180px 104px;
+      mask-image: radial-gradient(circle at 35% 50%, #000, transparent 72%);
+    }
+    body::after {
+      background: radial-gradient(circle at 50% 50%, transparent 45%, rgba(0, 0, 0, .46));
+    }
+
+    button, a { font: inherit; }
+    a { color: inherit; }
+    button:focus-visible, a:focus-visible {
+      outline: 2px solid var(--gold-hot);
+      outline-offset: 5px;
+    }
+
+    .shell {
+      position: relative;
+      z-index: 1;
+      min-height: 100dvh;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .masthead {
+      position: fixed;
+      z-index: 20;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px clamp(22px, 4vw, 64px);
+      pointer-events: none;
+    }
+    .brand, .counter, .print-button { pointer-events: auto; }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--ink);
+      text-decoration: none;
+      text-transform: uppercase;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .24em;
+    }
+    .brand-mark {
+      width: 18px;
+      aspect-ratio: 1;
+      border: 1px solid var(--gold);
+      transform: rotate(30deg);
+      box-shadow: 0 0 20px rgba(231, 199, 103, .24);
+    }
+    .mast-actions { display: flex; align-items: center; gap: 18px; }
+    .counter {
+      color: var(--muted);
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: .2em;
+    }
+    .print-button {
+      appearance: none;
+      border: 0;
+      padding: 5px 0;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+      text-transform: uppercase;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .18em;
+    }
+    .print-button:hover { color: var(--gold); }
+
+    .experience {
+      min-height: 100dvh;
+      display: grid;
+      grid-template-columns: minmax(360px, 48%) minmax(360px, 1fr);
+      align-items: stretch;
+    }
+
+    .tree-stage {
+      position: relative;
+      min-height: 100dvh;
+      touch-action: pan-x;
+      user-select: none;
+      transition: transform 480ms var(--ease);
+    }
+    .tree-stage::before {
+      content: "";
+      position: absolute;
+      width: min(56vw, 680px);
+      aspect-ratio: 1;
+      top: 50%;
+      left: 46%;
+      border: 1px solid rgba(120, 214, 247, .09);
+      transform: translate(-50%, -50%) rotate(15deg);
+      clip-path: polygon(50% 0, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
+      box-shadow: inset 0 0 80px rgba(120, 214, 247, .025);
+    }
+    .tree-stage::after {
+      content: "108 · 60 · 360";
+      position: absolute;
+      left: clamp(22px, 5vw, 78px);
+      bottom: 28px;
+      color: rgba(148, 166, 180, .52);
+      font-size: 9px;
+      letter-spacing: .42em;
+      writing-mode: vertical-rl;
+    }
+
+    .tree {
+      position: absolute;
+      top: 50%;
+      left: 46%;
+      width: min(430px, 76vw);
+      height: 590px;
+      transform: translate(-50%, -50%);
+    }
+    .spine {
+      position: absolute;
+      z-index: 0;
+      top: 50%;
+      left: 50%;
+      width: 1px;
+      height: 520px;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(transparent, var(--line) 10%, rgba(120, 214, 247, .56) 50%, var(--line) 90%, transparent);
+      box-shadow: 0 0 14px rgba(120, 214, 247, .2);
+    }
+    .spine::before,
+    .spine::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      width: 7px;
+      height: 7px;
+      border: 1px solid var(--line);
+      transform: translateX(-50%) rotate(45deg);
+    }
+    .spine::before { top: 2px; }
+    .spine::after { bottom: 2px; }
+
+    .node {
+      --distance: calc(var(--i) - var(--active));
+      position: absolute;
+      z-index: 2;
+      top: 50%;
+      left: 50%;
+      width: 198px;
+      min-height: 54px;
+      border: 0;
+      padding: 9px 16px;
+      color: var(--dim);
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+      transform: translate(calc(-50% + var(--side) * 96px), calc(-50% + var(--distance) * 82px));
+      transition: transform 480ms var(--ease), color 360ms ease, opacity 360ms ease, filter 360ms ease;
+    }
+    .node:nth-of-type(even) { text-align: right; }
+    .node::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 104px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--line));
+      transform-origin: 100% 50%;
+      transition: width 480ms var(--ease), background 360ms ease, box-shadow 360ms ease;
+    }
+    .node:nth-of-type(odd)::before {
+      right: calc(100% - 7px);
+      transform: rotate(30deg);
+    }
+    .node:nth-of-type(even)::before {
+      left: calc(100% - 7px);
+      transform-origin: 0 50%;
+      transform: rotate(-30deg) scaleX(-1);
+    }
+    .node::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 10px;
+      height: 10px;
+      border: 1px solid var(--line);
+      background: var(--navy);
+      transform: translateY(-50%) rotate(45deg);
+      transition: border-color 360ms ease, background 360ms ease, box-shadow 360ms ease, transform 360ms ease;
+    }
+    .node:nth-of-type(odd)::after { left: 1px; }
+    .node:nth-of-type(even)::after { right: 1px; }
+    .node-index {
+      display: block;
+      margin-bottom: 1px;
+      color: inherit;
+      font-size: 9px;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: .24em;
+    }
+    .node-label {
+      display: block;
+      color: inherit;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(18px, 2vw, 25px);
+      line-height: 1.05;
+      letter-spacing: .025em;
+    }
+    .node:not(.is-active) { opacity: .68; filter: saturate(.65); }
+    .node:hover { color: var(--blue); opacity: 1; }
+    .node.is-active {
+      z-index: 3;
+      color: var(--gold-hot);
+      opacity: 1;
+      filter: none;
+      transform: translate(calc(-50% + var(--side) * 111px), -50%);
+      text-shadow: 0 0 22px rgba(231, 199, 103, .26);
+    }
+    .node.is-active::before {
+      width: 126px;
+      background: linear-gradient(90deg, transparent, var(--gold));
+      box-shadow: 0 0 10px rgba(231, 199, 103, .3);
+    }
+    .node.is-active::after {
+      border-color: var(--gold-hot);
+      background: var(--gold);
+      box-shadow: 0 0 20px rgba(231, 199, 103, .72);
+      transform: translateY(-50%) rotate(45deg) scale(1.2);
+    }
+
+    .hint {
+      position: absolute;
+      left: 50%;
+      bottom: 34px;
+      transform: translateX(-50%);
+      color: rgba(148, 166, 180, .65);
+      text-transform: uppercase;
+      white-space: nowrap;
+      font-size: 9px;
+      letter-spacing: .2em;
+    }
+    .hint-key {
+      display: inline-grid;
+      width: 20px;
+      height: 20px;
+      margin: 0 4px;
+      place-items: center;
+      border: 1px solid rgba(148, 166, 180, .28);
+      color: var(--muted);
+    }
+
+    .panel-wrap {
+      position: relative;
+      z-index: 5;
+      display: grid;
+      align-items: center;
+      min-height: 100dvh;
+      padding: 100px clamp(34px, 7vw, 110px) 72px clamp(28px, 5vw, 86px);
+    }
+    .panel-wrap::before {
+      content: "";
+      position: absolute;
+      top: 16%;
+      bottom: 16%;
+      left: 0;
+      width: 1px;
+      background: linear-gradient(transparent, rgba(231, 199, 103, .24), transparent);
+    }
+    .panel {
+      grid-area: 1 / 1;
+      max-width: 560px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(34px);
+      transition: opacity 320ms ease, transform 480ms var(--ease), visibility 0s linear 480ms;
+      pointer-events: none;
+    }
+    .panel.is-active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+      transition-delay: 120ms, 60ms, 0s;
+      pointer-events: auto;
+    }
+    .eyebrow {
+      margin: 0 0 16px;
+      color: var(--gold);
+      text-transform: uppercase;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .28em;
+    }
+    .panel h1,
+    .panel h2 {
+      max-width: 11ch;
+      margin: 0 0 24px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(48px, 6vw, 88px);
+      font-weight: 400;
+      line-height: .9;
+      letter-spacing: -.035em;
+    }
+    .statement {
+      max-width: 34ch;
+      margin: 0 0 28px;
+      color: #e8e7df;
+      font-size: clamp(18px, 2vw, 24px);
+      line-height: 1.42;
+    }
+    .details {
+      max-width: 490px;
+      margin: 0 0 30px;
+      padding: 0;
+      list-style: none;
+      counter-reset: detail;
+    }
+    .details li {
+      position: relative;
+      margin: 0;
+      padding: 10px 0 10px 34px;
+      border-top: 1px solid rgba(120, 214, 247, .12);
+      color: var(--muted);
+      counter-increment: detail;
+    }
+    .details li::before {
+      content: "0" counter(detail);
+      position: absolute;
+      top: 12px;
+      left: 0;
+      color: var(--dim);
+      font-size: 9px;
+      letter-spacing: .12em;
+    }
+    .details li:last-child { border-bottom: 1px solid rgba(120, 214, 247, .12); }
+    .links-row { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 0;
+      color: var(--blue);
+      text-decoration: none;
+      text-transform: uppercase;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .18em;
+    }
+    .project-link::after { content: "↗"; color: var(--gold); font-size: 15px; }
+    .project-link:hover { color: var(--gold-hot); }
+    .album-link {
+      padding: 10px 14px;
+      border: 1px solid rgba(231, 199, 103, .45);
+      color: var(--gold-hot);
+      background: linear-gradient(120deg, rgba(231, 199, 103, .1), transparent);
+    }
+    .album-link:hover {
+      border-color: var(--gold-hot);
+      box-shadow: 0 0 24px rgba(231, 199, 103, .12);
+    }
+    .contact {
+      display: inline-block;
+      color: var(--muted);
+      text-decoration-color: rgba(148, 166, 180, .35);
+      text-underline-offset: 4px;
+      font-size: 12px;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 820px) {
+      body { overflow: hidden; }
+      .masthead { padding: 18px 20px; }
+      .brand-copy { display: none; }
+      .print-button { display: none; }
+      .experience { display: block; }
+      .tree-stage {
+        min-height: 58dvh;
+        transition: transform 480ms var(--ease);
+        touch-action: pan-x;
+      }
+      .tree-stage::before { width: 116vw; left: 50%; opacity: .6; }
+      .tree-stage::after { display: none; }
+      .tree {
+        top: 49%;
+        left: 50%;
+        width: min(390px, 94vw);
+        height: 490px;
+      }
+      .spine { height: 420px; }
+      .node {
+        width: 155px;
+        min-height: 48px;
+        padding: 7px 10px;
+        transform: translate(calc(-50% + var(--side) * 69px), calc(-50% + var(--distance) * 62px));
+      }
+      .node::before { width: 70px; }
+      .node.is-active { transform: translate(calc(-50% + var(--side) * 79px), -50%); }
+      .node.is-active::before { width: 82px; }
+      .node-label { font-size: 18px; }
+      .hint { display: none; }
+      .panel-wrap {
+        position: fixed;
+        z-index: 12;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        min-height: 44dvh;
+        max-height: 51dvh;
+        padding: 28px 24px 32px;
+        overflow-y: auto;
+        align-items: start;
+        border-top: 1px solid rgba(231, 199, 103, .2);
+        background: linear-gradient(180deg, rgba(5, 19, 32, .94), rgba(2, 7, 13, .985));
+        box-shadow: 0 -22px 70px rgba(0, 0, 0, .4);
+        backdrop-filter: blur(18px);
+      }
+      .panel-wrap::before {
+        top: 10px;
+        bottom: auto;
+        left: 50%;
+        width: 46px;
+        height: 1px;
+        transform: translateX(-50%);
+        background: var(--gold);
+      }
+      .panel { max-width: none; transform: translateY(18px); }
+      .panel.is-active { transform: translateY(0); }
+      .eyebrow { margin-bottom: 8px; }
+      .panel h1, .panel h2 {
+        max-width: none;
+        margin-bottom: 12px;
+        font-size: clamp(34px, 11vw, 52px);
+      }
+      .statement { margin-bottom: 14px; font-size: 16px; }
+      .details { margin-bottom: 14px; }
+      .details li { padding-top: 7px; padding-bottom: 7px; font-size: 13px; }
+      .details li::before { top: 9px; }
+      .project-link { padding: 5px 0; }
+    }
+
+    @media (max-height: 690px) and (min-width: 821px) {
+      .tree { height: 500px; }
+      .spine { height: 440px; }
+      .node { transform: translate(calc(-50% + var(--side) * 96px), calc(-50% + var(--distance) * 66px)); }
+      .node.is-active { transform: translate(calc(-50% + var(--side) * 111px), -50%); }
+      .panel h1, .panel h2 { font-size: clamp(44px, 5vw, 70px); }
+      .details li { padding-top: 7px; padding-bottom: 7px; }
+      .details li::before { top: 9px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+
+    @media print {
+      :root { --ink: #111; --muted: #333; }
+      @page { margin: 18mm; }
+      body {
+        overflow: visible;
+        color: #111;
+        background: #fff;
+        font-size: 10.5pt;
+      }
+      body::before, body::after, .masthead, .tree-stage { display: none !important; }
+      .shell, .experience, .panel-wrap {
+        display: block;
+        min-height: 0;
+        overflow: visible;
+      }
+      .panel-wrap { padding: 0; }
+      .panel-wrap::before { display: none; }
+      .panel {
+        display: block;
+        max-width: none;
+        margin: 0 0 13mm;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        pointer-events: auto;
+        break-inside: avoid;
+      }
+      .panel:not(:first-child) { border-top: 1px solid #aaa; padding-top: 8mm; }
+      .eyebrow { margin-bottom: 2mm; color: #555; }
+      .panel h1, .panel h2 {
+        max-width: none;
+        margin: 0 0 3mm;
+        color: #111;
+        font-size: 28pt;
+      }
+      .statement { max-width: none; margin-bottom: 3mm; color: #111; font-size: 13pt; }
+      .details { max-width: none; margin-bottom: 3mm; }
+      .details li { padding: 1.5mm 0 1.5mm 8mm; color: #333; }
+      .project-link, .contact { color: #111; }
+      .project-link::after { content: "  " attr(href); color: #555; text-transform: none; letter-spacing: 0; }
+    }
+  </style>
+  <style>
+    /* Dark-gold Moss Tree refinement */
+    :root {
+      --night: #010509;
+      --navy: #04101a;
+      --navy-2: #071824;
+      --ink: #f1eadb;
+      --muted: #a59f92;
+      --dim: #625f59;
+      --gold: #bd8d43;
+      --gold-hot: #f0d293;
+      --blue: #9bbfca;
+      --line: rgba(189, 141, 67, .25);
+      --hairline: rgba(240, 210, 147, .13);
+      --ease: cubic-bezier(.2, .82, .22, 1);
+    }
+
+    html { background: #010509; }
+    body {
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 24% 34%, rgba(25, 67, 83, .19), transparent 31rem),
+        radial-gradient(circle at 78% 68%, rgba(122, 82, 31, .09), transparent 30rem),
+        linear-gradient(135deg, #071520 0%, #030b12 48%, #010509 100%);
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      letter-spacing: .016em;
+    }
+    body::before {
+      opacity: .32;
+      background-image:
+        linear-gradient(30deg, transparent 49.8%, rgba(189, 141, 67, .055) 50%, transparent 50.2%),
+        linear-gradient(150deg, transparent 49.8%, rgba(155, 191, 202, .035) 50%, transparent 50.2%),
+        radial-gradient(circle, rgba(240, 210, 147, .12) 0 1px, transparent 1.3px);
+      background-size: 220px 127px, 220px 127px, 83px 83px;
+      background-position: center, center, 12px 17px;
+      mask-image: radial-gradient(ellipse at 38% 50%, #000 8%, transparent 77%);
+    }
+    body::after {
+      background:
+        radial-gradient(ellipse at center, transparent 38%, rgba(0, 2, 5, .55) 100%),
+        repeating-linear-gradient(0deg, rgba(255,255,255,.012) 0 1px, transparent 1px 4px);
+      opacity: .82;
+    }
+
+    .shell::before,
+    .shell::after {
+      content: "";
+      position: fixed;
+      z-index: 50;
+      pointer-events: none;
+    }
+    .shell::before {
+      inset: 15px;
+      border: 1px solid rgba(189, 141, 67, .42);
+      clip-path: polygon(0 24px, 24px 0, calc(100% - 24px) 0, 100% 24px, 100% calc(100% - 24px), calc(100% - 24px) 100%, 24px 100%, 0 calc(100% - 24px));
+      box-shadow: inset 0 0 38px rgba(189, 141, 67, .025);
+    }
+    .shell::after {
+      inset: 21px;
+      border: 1px solid rgba(189, 141, 67, .13);
+      clip-path: polygon(0 18px, 18px 0, calc(100% - 18px) 0, 100% 18px, 100% calc(100% - 18px), calc(100% - 18px) 100%, 18px 100%, 0 calc(100% - 18px));
+    }
+
+    .cosmos {
+      position: fixed;
+      z-index: 0;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .orbit {
+      position: absolute;
+      left: 23%;
+      top: 50%;
+      width: min(58vw, 760px);
+      aspect-ratio: 1;
+      border: 1px solid rgba(189, 141, 67, .08);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .orbit::before,
+    .orbit::after {
+      content: "";
+      position: absolute;
+      inset: 13%;
+      border: 1px solid rgba(155, 191, 202, .055);
+      border-radius: 50%;
+    }
+    .orbit::after {
+      inset: 29%;
+      border-color: rgba(189, 141, 67, .095);
+    }
+    .orbit-b {
+      left: 75%;
+      top: 71%;
+      width: min(31vw, 420px);
+      opacity: .55;
+    }
+    .cosmic-axis {
+      position: absolute;
+      left: 23%;
+      top: 50%;
+      width: min(52vw, 680px);
+      aspect-ratio: 1;
+      transform: translate(-50%, -50%) rotate(15deg);
+      opacity: .58;
+      background:
+        linear-gradient(transparent calc(50% - .5px), rgba(189,141,67,.09) 50%, transparent calc(50% + .5px)),
+        linear-gradient(90deg, transparent calc(50% - .5px), rgba(189,141,67,.09) 50%, transparent calc(50% + .5px));
+      clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+    }
+    .cosmic-axis::before,
+    .cosmic-axis::after {
+      content: "";
+      position: absolute;
+      inset: 12%;
+      border: 1px solid rgba(189,141,67,.08);
+      transform: rotate(45deg);
+    }
+    .cosmic-axis::after {
+      inset: 27%;
+      border-color: rgba(155,191,202,.07);
+    }
+    .cosmos-fleck {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border: 1px solid rgba(240, 210, 147, .45);
+      transform: rotate(45deg);
+      animation: dream-drift 9s ease-in-out infinite alternate;
+    }
+    .cosmos-fleck:nth-of-type(4) { left: 8%; top: 24%; }
+    .cosmos-fleck:nth-of-type(5) { left: 31%; top: 13%; width: 2px; height: 2px; animation-delay: -3s; }
+    .cosmos-fleck:nth-of-type(6) { left: 59%; top: 18%; animation-delay: -5s; }
+    .cosmos-fleck:nth-of-type(7) { right: 8%; top: 37%; width: 3px; height: 3px; animation-delay: -7s; }
+    .cosmos-fleck:nth-of-type(8) { left: 54%; bottom: 11%; width: 2px; height: 2px; animation-delay: -2s; }
+    .cosmos-fleck:nth-of-type(9) { right: 17%; bottom: 19%; animation-delay: -6s; }
+    @keyframes dream-drift {
+      from { opacity: .22; translate: 0 -2px; }
+      to { opacity: .68; translate: 0 5px; }
+    }
+
+    button:focus-visible,
+    a:focus-visible {
+      outline: 1px solid var(--gold-hot);
+      outline-offset: 6px;
+    }
+    .masthead { padding: 30px clamp(30px, 4vw, 68px); }
+    .brand {
+      gap: 15px;
+      color: #d9d1c1;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .3em;
+    }
+    .brand-mark {
+      position: relative;
+      width: 24px;
+      border-color: rgba(240, 210, 147, .72);
+      box-shadow: 0 0 24px rgba(189, 141, 67, .12);
+    }
+    .brand-mark::before,
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      inset: 5px;
+      border: 1px solid rgba(240, 210, 147, .42);
+    }
+    .brand-mark::after {
+      inset: 10px -5px;
+      height: 1px;
+      border: 0;
+      background: var(--gold);
+    }
+    .brand::after {
+      content: "EST.  MMXXVI";
+      position: absolute;
+      top: 47px;
+      left: clamp(30px, 4vw, 68px);
+      color: rgba(189,141,67,.34);
+      font-family: Baskerville, Georgia, serif;
+      font-size: 7px;
+      font-weight: 400;
+      letter-spacing: .34em;
+    }
+    .counter { color: #8c877d; letter-spacing: .27em; }
+    .print-button {
+      color: #8c877d;
+      letter-spacing: .23em;
+      transition: color 220ms ease;
+    }
+    .install-button {
+      appearance: none;
+      border: 1px solid rgba(189,141,67,.3);
+      padding: 8px 11px;
+      color: #c8aa70;
+      background: rgba(189,141,67,.035);
+      cursor: pointer;
+      text-transform: uppercase;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      transition: color 220ms ease, border-color 220ms ease, background 220ms ease;
+    }
+    .install-button:hover {
+      color: var(--gold-hot);
+      border-color: rgba(240,210,147,.62);
+      background: rgba(189,141,67,.08);
+    }
+    .install-button[hidden] { display: none; }
+
+    .experience { grid-template-columns: minmax(390px, 49%) minmax(360px, 1fr); }
+    .tree-stage::before {
+      width: min(58vw, 720px);
+      border-color: rgba(189, 141, 67, .11);
+      transform: translate(-50%, -50%) rotate(30deg);
+      box-shadow: inset 0 0 100px rgba(155, 191, 202, .018), 0 0 70px rgba(189, 141, 67, .018);
+    }
+    .tree-stage::after {
+      content: "108 · 60 · 360   /   B$S";
+      color: rgba(189, 141, 67, .38);
+      letter-spacing: .46em;
+    }
+    .tree { left: 47%; }
+    .tree::before {
+      content: "✦";
+      position: absolute;
+      z-index: 1;
+      left: 50%;
+      top: -17px;
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(189,141,67,.23);
+      border-radius: 50%;
+      color: rgba(240,210,147,.62);
+      font-size: 8px;
+      transform: translateX(-50%);
+      box-shadow: 0 0 0 7px rgba(189,141,67,.025);
+    }
+    .spine {
+      background: linear-gradient(transparent, rgba(189,141,67,.16) 8%, rgba(240,210,147,.48) 50%, rgba(189,141,67,.16) 92%, transparent);
+      box-shadow: 0 0 18px rgba(189, 141, 67, .12);
+    }
+    .spine::before,
+    .spine::after { border-color: rgba(240, 210, 147, .34); }
+    .node {
+      color: #777269;
+      transition: transform 560ms var(--ease), color 320ms ease, opacity 320ms ease, filter 320ms ease;
+    }
+    .node::before { background: linear-gradient(90deg, transparent, rgba(189,141,67,.25)); }
+    .node::after {
+      width: 8px;
+      height: 8px;
+      border-color: rgba(189, 141, 67, .35);
+      background: #06121b;
+    }
+    .node-index {
+      font-size: 8px;
+      letter-spacing: .32em;
+    }
+    .node-label {
+      font-family: Baskerville, "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+      font-size: clamp(18px, 1.8vw, 24px);
+      letter-spacing: .045em;
+    }
+    .node:not(.is-active) { opacity: .59; filter: saturate(.45); }
+    .node:hover { color: #c9b582; opacity: .95; }
+    .node.is-active {
+      color: var(--gold-hot);
+      text-shadow: 0 0 24px rgba(189, 141, 67, .18);
+    }
+    .node.is-active::before {
+      background: linear-gradient(90deg, transparent, rgba(240,210,147,.76));
+      box-shadow: 0 0 12px rgba(189, 141, 67, .18);
+    }
+    .node.is-active::after {
+      border-color: var(--gold-hot);
+      background: #d5a654;
+      box-shadow: 0 0 0 5px rgba(189,141,67,.08), 0 0 22px rgba(189,141,67,.5);
+    }
+    .hint { color: rgba(165,159,146,.48); letter-spacing: .24em; }
+    .hint-key { border-color: rgba(189,141,67,.22); color: #9e927d; }
+
+    .panel-wrap { padding: 110px clamp(42px, 7vw, 116px) 80px clamp(34px, 5vw, 90px); }
+    .panel-wrap::before {
+      top: 12%;
+      bottom: 12%;
+      background: linear-gradient(transparent, rgba(189,141,67,.15) 15%, rgba(240,210,147,.38) 50%, rgba(189,141,67,.15) 85%, transparent);
+    }
+    .panel-wrap::after {
+      content: "B$S  /  PATTERN ARCHITECTS";
+      position: absolute;
+      right: clamp(38px, 6vw, 94px);
+      bottom: 34px;
+      color: rgba(189, 141, 67, .28);
+      font-family: Baskerville, Georgia, serif;
+      font-size: 8px;
+      letter-spacing: .4em;
+    }
+    .panel::before {
+      content: "";
+      position: absolute;
+      top: -52px;
+      right: 0;
+      width: 54px;
+      aspect-ratio: 1;
+      border: 1px solid rgba(189,141,67,.16);
+      border-radius: 50%;
+      background:
+        linear-gradient(45deg, transparent 49.5%, rgba(189,141,67,.13) 50%, transparent 50.5%),
+        linear-gradient(-45deg, transparent 49.5%, rgba(189,141,67,.13) 50%, transparent 50.5%);
+      box-shadow: inset 0 0 0 7px rgba(1,5,9,.72), inset 0 0 0 8px rgba(189,141,67,.08);
+    }
+    .panel::after {
+      content: "B$S";
+      position: absolute;
+      top: -34px;
+      right: 14px;
+      width: 28px;
+      color: rgba(240,210,147,.46);
+      font-family: Baskerville, Georgia, serif;
+      font-size: 8px;
+      line-height: 1;
+      text-align: center;
+      letter-spacing: .06em;
+    }
+    .panel {
+      max-width: 590px;
+      transform: translateX(28px) translateY(6px);
+      transition: opacity 380ms ease, transform 600ms var(--ease), visibility 0s linear 600ms;
+    }
+    .panel.is-active { transform: translateX(0) translateY(0); }
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      color: #c59b57;
+      font-size: 9px;
+      letter-spacing: .34em;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 22px;
+      height: 1px;
+      background: rgba(240, 210, 147, .52);
+    }
+    .panel h1,
+    .panel h2 {
+      max-width: 12ch;
+      margin-bottom: 27px;
+      color: #efe5d2;
+      font-family: Baskerville, "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+      font-size: clamp(50px, 6vw, 90px);
+      line-height: .88;
+      letter-spacing: -.025em;
+      text-wrap: balance;
+      text-shadow: 0 5px 35px rgba(0,0,0,.42);
+    }
+    .statement {
+      color: #d7d1c5;
+      font-family: Baskerville, "Iowan Old Style", Georgia, serif;
+      font-size: clamp(19px, 2vw, 25px);
+      line-height: 1.48;
+    }
+    .details li {
+      border-top-color: rgba(189,141,67,.13);
+      color: #9e9a91;
+    }
+    .details li:last-child { border-bottom-color: rgba(189,141,67,.13); }
+    .details li::before { color: rgba(189,141,67,.53); }
+    .project-link { color: #b8cbd0; letter-spacing: .21em; }
+    .project-link::after { color: #c79649; }
+    .album-link {
+      border-color: rgba(189,141,67,.46);
+      color: #e2c584;
+      background: linear-gradient(115deg, rgba(189,141,67,.1), rgba(189,141,67,.018));
+      box-shadow: inset 0 0 22px rgba(189,141,67,.025);
+    }
+    .album-link:hover { box-shadow: 0 0 28px rgba(189,141,67,.11), inset 0 0 22px rgba(189,141,67,.04); }
+    .contact { color: #918d84; }
+
+    @media (max-width: 820px) {
+      .shell::before { inset: 8px; }
+      .shell::after { inset: 13px; }
+      .masthead { padding: 22px 24px; }
+      .mast-actions { gap: 12px; }
+      .install-button { padding: 7px 9px; font-size: 8px; }
+      .cosmos { opacity: .58; }
+      .orbit { width: 128vw; left: 50%; top: 29%; }
+      .cosmic-axis { width: 112vw; left: 50%; top: 29%; }
+      .orbit-b, .cosmos-fleck:nth-of-type(n+7) { display: none; }
+      .tree-stage::before { width: 122vw; }
+      .panel-wrap {
+        min-height: 45dvh;
+        max-height: 53dvh;
+        padding: 30px 27px calc(34px + env(safe-area-inset-bottom));
+        border-top-color: rgba(189,141,67,.31);
+        background: linear-gradient(180deg, rgba(5,17,26,.94), rgba(1,6,10,.99));
+        box-shadow: 0 -24px 76px rgba(0,0,0,.56), inset 0 1px rgba(240,210,147,.025);
+      }
+      .panel-wrap::before { background: rgba(213,166,84,.72); }
+      .panel-wrap::after { right: 27px; bottom: 16px; font-size: 6px; }
+      .panel::before, .panel::after { display: none; }
+      .brand::after { display: none; }
+      .eyebrow { margin-bottom: 10px; }
+      .panel h1,
+      .panel h2 { font-size: clamp(36px, 11.5vw, 54px); }
+      .statement { font-size: 17px; }
+      .details li { min-height: 36px; }
+      .project-link { min-height: 42px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cosmos-fleck { animation: none !important; }
+    }
+
+    @media print {
+      .cosmos, .shell::before, .shell::after, .panel-wrap::after { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cosmos" aria-hidden="true">
+    <span class="orbit"></span>
+    <span class="orbit orbit-b"></span>
+    <span class="cosmic-axis"></span>
+    <span class="cosmos-fleck"></span>
+    <span class="cosmos-fleck"></span>
+    <span class="cosmos-fleck"></span>
+    <span class="cosmos-fleck"></span>
+    <span class="cosmos-fleck"></span>
+    <span class="cosmos-fleck"></span>
+  </div>
+  <div class="shell">
+    <header class="masthead">
+      <a class="brand" href="#bio" aria-label="Blue Snake Studio — return to Bio">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-copy">Blue $nake Studio · Pattern Architects</span>
+      </a>
+      <div class="mast-actions">
+        <span class="counter" aria-hidden="true"><span id="current-count">01</span> / 09</span>
+        <button class="install-button" id="install-button" type="button" hidden>Install app</button>
+        <button class="print-button" type="button" onclick="window.print()">Print résumé</button>
+      </div>
+    </header>
+
+    <main class="experience" id="experience">
+      <section class="tree-stage" id="tree-stage" aria-label="Project navigation">
+        <div class="tree" role="tablist" aria-orientation="vertical" aria-label="Explore the Moss Tree">
+          <span class="spine" aria-hidden="true"></span>
+
+          <button class="node is-active" style="--i:0;--side:-1" id="tab-bio" type="button" role="tab" aria-selected="true" aria-controls="panel-bio" data-index="0" data-slug="bio">
+            <span class="node-index">01</span><span class="node-label">Bio</span>
+          </button>
+          <button class="node" style="--i:1;--side:1" id="tab-meta-pet" type="button" role="tab" aria-selected="false" aria-controls="panel-meta-pet" tabindex="-1" data-index="1" data-slug="meta-pet">
+            <span class="node-index">02</span><span class="node-label">Meta‑Pet</span>
+          </button>
+          <button class="node" style="--i:2;--side:-1" id="tab-moss-60" type="button" role="tab" aria-selected="false" aria-controls="panel-moss-60" tabindex="-1" data-index="2" data-slug="moss-60">
+            <span class="node-index">03</span><span class="node-label">Moss 60</span>
+          </button>
+          <button class="node" style="--i:3;--side:1" id="tab-teacher-tools" type="button" role="tab" aria-selected="false" aria-controls="panel-teacher-tools" tabindex="-1" data-index="3" data-slug="teacher-tools">
+            <span class="node-index">04</span><span class="node-label">Teacher Tools</span>
+          </button>
+          <button class="node" style="--i:4;--side:-1" id="tab-black-wing" type="button" role="tab" aria-selected="false" aria-controls="panel-black-wing" tabindex="-1" data-index="4" data-slug="black-wing">
+            <span class="node-index">05</span><span class="node-label">Black Wing Crew</span>
+          </button>
+          <button class="node" style="--i:5;--side:1" id="tab-frankston-fuji" type="button" role="tab" aria-selected="false" aria-controls="panel-frankston-fuji" tabindex="-1" data-index="5" data-slug="frankston-fuji">
+            <span class="node-index">06</span><span class="node-label">Frankston → Fuji</span>
+          </button>
+          <button class="node" style="--i:6;--side:-1" id="tab-black-omen" type="button" role="tab" aria-selected="false" aria-controls="panel-black-omen" tabindex="-1" data-index="6" data-slug="black-omen">
+            <span class="node-index">07</span><span class="node-label">Black Omen</span>
+          </button>
+          <button class="node" style="--i:7;--side:1" id="tab-semantic-sovereignty" type="button" role="tab" aria-selected="false" aria-controls="panel-semantic-sovereignty" tabindex="-1" data-index="7" data-slug="semantic-sovereignty">
+            <span class="node-index">08</span><span class="node-label">Semantic Sovereignty</span>
+          </button>
+          <button class="node" style="--i:8;--side:-1" id="tab-visual-worlds" type="button" role="tab" aria-selected="false" aria-controls="panel-visual-worlds" tabindex="-1" data-index="8" data-slug="visual-worlds">
+            <span class="node-index">09</span><span class="node-label">Visual Worlds</span>
+          </button>
+        </div>
+        <p class="hint"><span class="hint-key">↑</span><span class="hint-key">↓</span> or swipe to explore</p>
+      </section>
+
+      <section class="panel-wrap" aria-live="polite" aria-atomic="false">
+        <article class="panel is-active" id="panel-bio" role="tabpanel" aria-labelledby="tab-bio">
+          <p class="eyebrow">The Moss Man · Blue $nake Studio</p>
+          <h1>Patterns become worlds.</h1>
+          <p class="statement">A hands-on creator working where art, mathematics, music, mythology, education and digital invention meet.</p>
+          <ul class="details">
+            <li>Studio builder, storyteller, skater, singer, painter, poet and songmaker.</li>
+            <li>Digital developer and behavioural thinker following patterns until they become something alive.</li>
+            <li>Self-declared pirate wizard; professionally, a mathematical storyteller and creative director.</li>
+          </ul>
+          <div class="links-row">
+            <a class="project-link" href="https://www.bluesnakestudios.com/">Enter the studio</a>
+            <a class="contact" href="mailto:bluesssnakestudio@gmail.com">bluesssnakestudio@gmail.com</a>
+          </div>
+        </article>
+
+        <article class="panel" id="panel-meta-pet" role="tabpanel" aria-labelledby="tab-meta-pet" hidden>
+          <p class="eyebrow">Flagship · Digital Companion</p>
+          <h2>Not a pet. A process.</h2>
+          <p class="statement">Meta‑Pet is a privacy-first learning companion designed to give attention back instead of stealing it.</p>
+          <ul class="details">
+            <li>Local-first, child-safe and free from ads, trackers and unnecessary cloud collection.</li>
+            <li>STEAM learning through puzzles, patterns, creative tasks and symbolic evolution.</li>
+            <li>Built for healthy device use, real classrooms and minimal teacher administration.</li>
+          </ul>
+          <a class="project-link" href="https://www.bluesnakestudios.com/">Explore Meta‑Pet</a>
+        </article>
+
+        <article class="panel" id="panel-moss-60" role="tabpanel" aria-labelledby="tab-moss-60" hidden>
+          <p class="eyebrow">Visual Mathematics · 108 · 360</p>
+          <h2>Number you can feel.</h2>
+          <p class="statement">Moss 60 makes mathematics visual, audible, symbolic and interactive—structure rather than calculation alone.</p>
+          <ul class="details">
+            <li>Connects base-60 thinking, 108 and 360 cycles, geometry, sound and identity marks.</li>
+            <li>Generates vast uniqueness spaces for digital companions and symbolic genomes.</li>
+            <li>Feeds Meta‑Pet identity glyphs, layered security ideas and pattern-based learning.</li>
+          </ul>
+          <a class="project-link album-link" href="https://www.bluesnakestudios.com/app/moss60">Enter Moss 60</a>
+        </article>
+
+        <article class="panel" id="panel-teacher-tools" role="tabpanel" aria-labelledby="tab-teacher-tools" hidden>
+          <p class="eyebrow">Education · Behaviour Support</p>
+          <h2>Useful in a real classroom.</h2>
+          <p class="statement">Practical support for teachers, designed around resilience, healthy behaviour and less administrative weight.</p>
+          <ul class="details">
+            <li>Teacher’s Secret Cheatsheet: classroom-ready support with no setup maze, accounts or technical overhead.</li>
+            <li>Early-years support informed by duties of care and behavioural challenges.</li>
+            <li>Attention-first learning that builds curiosity and agency rather than pressure.</li>
+          </ul>
+          <a class="project-link album-link" href="https://teachers-secret-cheatsheet.vercel.app/">Open Teacher’s Secret Cheatsheet</a>
+        </article>
+
+        <article class="panel" id="panel-black-wing" role="tabpanel" aria-labelledby="tab-black-wing" hidden>
+          <p class="eyebrow">Music World · Neon Venom</p>
+          <h2>The sign dreams the seer.</h2>
+          <p class="statement">Black Wing Crew is a dark chant world of oars, birds, black butterflies, omen language and recursive hooks.</p>
+          <ul class="details">
+            <li>Dark pop-metal, sea-shanty call-and-response, taiko pulse and moon-over-bay cinema.</li>
+            <li>Lyrics, posters, rhythm sheets, QR campaigns and shareable music-world assets.</li>
+            <li>Language designed to echo: the seer dreams the sign; the sign dreams the seer.</li>
+          </ul>
+          <div class="links-row">
+            <a class="project-link album-link" href="https://blackwingcrew.netlify.app/">Listen to the album</a>
+            <a class="project-link" href="https://www.youtube.com/@blkck2">Watch on YouTube</a>
+          </div>
+        </article>
+
+        <article class="panel" id="panel-frankston-fuji" role="tabpanel" aria-labelledby="tab-frankston-fuji" hidden>
+          <p class="eyebrow">Bilingual Song · Sister-City Project</p>
+          <h2>Two shores. One song.</h2>
+          <p class="statement">Frankston → Fuji is a bilingual song created for the sister-city relationship between the two communities.</p>
+          <ul class="details">
+            <li>A standalone musical project celebrating connection across language and distance.</li>
+            <li>Built as a cultural bridge between Frankston and Fuji through shared melody.</li>
+            <li>Presented independently from Black Wing Crew and the Neon Venom music world.</li>
+          </ul>
+          <a class="project-link album-link" href="https://frankston2fuji.netlify.app/">Hear the sister-city song</a>
+        </article>
+
+        <article class="panel" id="panel-black-omen" role="tabpanel" aria-labelledby="tab-black-omen" hidden>
+          <p class="eyebrow">Song Research · Bunurong–Boonwurrung</p>
+          <h2>Black Omen. The Koori Code.</h2>
+          <p class="statement">A research map documenting the ongoing effort to translate Black Omen into traditional First Peoples language.</p>
+          <ul class="details">
+            <li>Explores Bunurong–Boonwurrung language, place and cultural context around the song.</li>
+            <li>Maps the translation journey as research in progress, not a claim of cultural authority.</li>
+            <li>Keeps language respect, consultation and transparent learning at the centre of the work.</li>
+          </ul>
+          <a class="project-link album-link" href="https://waahn.netlify.app/">Open the research map</a>
+        </article>
+
+        <article class="panel" id="panel-semantic-sovereignty" role="tabpanel" aria-labelledby="tab-semantic-sovereignty" hidden>
+          <p class="eyebrow">Memetics · OSS-734G · Field Manual</p>
+          <h2>Name the mood before it names you.</h2>
+          <p class="statement">Operation: Semantic Sovereignty is a practical doctrine for disciplined authorship under synthetic weather.</p>
+          <ul class="details">
+            <li>Read framing, urgency, emotional pressure and synthetic consensus before accepting the command.</li>
+            <li>Recover provenance: a screenshot is a lead, not a source; archive the primary object or mark it unresolved.</li>
+            <li>Use the Human Lock when mediated evidence could move money, safety, voting or reputation.</li>
+          </ul>
+          <a class="project-link" href="OSS_734G_KNOWN_UNKNOWNS_REGISTER.html">Open the field manual</a>
+        </article>
+
+        <article class="panel" id="panel-visual-worlds" role="tabpanel" aria-labelledby="tab-visual-worlds" hidden>
+          <p class="eyebrow">Art Direction · Memetic Language</p>
+          <h2>Myth made visible.</h2>
+          <p class="statement">Gold on blue, black cockatoos, snake geometry, sigils and language systems that turn separate projects into one world.</p>
+          <ul class="details">
+            <li>Auralia, Meta‑Pet, Moss Man, Pattern Architects and Black Wing Crew visual identities.</li>
+            <li>The Grammarian’s Coup: framing, repetition and hidden structures inside language.</li>
+            <li>Posters, lyric sheets, stickers, colouring pages, pitch work and promo systems.</li>
+          </ul>
+          <div class="links-row">
+            <a class="project-link" href="https://elevator-pitch-seven.vercel.app/">View elevator pitch</a>
+            <a class="contact" href="mailto:blkck2@gmail.com">blkck2@gmail.com</a>
+          </div>
+        </article>
+      </section>
+      <p class="sr-only" id="status" aria-live="polite"></p>
+    </main>
+  </div>
+
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const stage = document.getElementById('tree-stage');
+      const nodes = [...document.querySelectorAll('.node')];
+      const panels = [...document.querySelectorAll('.panel')];
+      const counter = document.getElementById('current-count');
+      const status = document.getElementById('status');
+      const installButton = document.getElementById('install-button');
+      const slugs = nodes.map(node => node.dataset.slug);
+      let active = Math.max(0, slugs.indexOf(location.hash.slice(1)));
+      let wheelLocked = false;
+      let pointerStartY = null;
+      let pointerStartX = null;
+      let installPrompt = null;
+
+      if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js').catch(() => {
+            status.textContent = 'Offline mode could not be enabled.';
+          });
+        });
+      }
+
+      window.addEventListener('beforeinstallprompt', event => {
+        event.preventDefault();
+        installPrompt = event;
+        installButton.hidden = false;
+      });
+
+      installButton.addEventListener('click', async () => {
+        if (!installPrompt) return;
+        installButton.hidden = true;
+        await installPrompt.prompt();
+        const choice = await installPrompt.userChoice;
+        status.textContent = choice.outcome === 'accepted'
+          ? 'Moss Tree app installation accepted.'
+          : 'Moss Tree app installation dismissed.';
+        installPrompt = null;
+      });
+
+      window.addEventListener('appinstalled', () => {
+        installPrompt = null;
+        installButton.hidden = true;
+        status.textContent = 'Moss Tree app installed.';
+      });
+
+      window.addEventListener('offline', () => {
+        status.textContent = 'Moss Tree is offline. Cached projects remain available.';
+      });
+
+      window.addEventListener('online', () => {
+        status.textContent = 'Moss Tree is back online.';
+      });
+
+      function select(index, options = {}) {
+        const next = Math.max(0, Math.min(nodes.length - 1, index));
+        const changed = next !== active;
+        active = next;
+        root.style.setProperty('--active', active);
+        counter.textContent = String(active + 1).padStart(2, '0');
+
+        nodes.forEach((node, i) => {
+          const selected = i === active;
+          node.classList.toggle('is-active', selected);
+          node.setAttribute('aria-selected', String(selected));
+          node.tabIndex = selected ? 0 : -1;
+        });
+
+        panels.forEach((panel, i) => {
+          const selected = i === active;
+          panel.classList.toggle('is-active', selected);
+          panel.hidden = !selected;
+        });
+
+        if (options.focus) nodes[active].focus({ preventScroll: true });
+        if (options.hash !== false && location.hash !== `#${slugs[active]}`) {
+          history.replaceState(null, '', `#${slugs[active]}`);
+        }
+        if (changed) status.textContent = `${nodes[active].innerText.replace(/\n/g, ' ')} selected`;
+      }
+
+      nodes.forEach(node => {
+        node.addEventListener('click', () => select(Number(node.dataset.index), { focus: true }));
+      });
+
+      document.addEventListener('keydown', event => {
+        if (event.altKey || event.ctrlKey || event.metaKey) return;
+        if (event.key === 'ArrowDown' || event.key === 'ArrowRight' || event.key === 'PageDown') {
+          event.preventDefault();
+          select(active + 1, { focus: true });
+        } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft' || event.key === 'PageUp') {
+          event.preventDefault();
+          select(active - 1, { focus: true });
+        } else if (event.key === 'Home') {
+          event.preventDefault();
+          select(0, { focus: true });
+        } else if (event.key === 'End') {
+          event.preventDefault();
+          select(nodes.length - 1, { focus: true });
+        }
+      });
+
+      stage.addEventListener('wheel', event => {
+        if (Math.abs(event.deltaY) < 12 || wheelLocked) return;
+        event.preventDefault();
+        wheelLocked = true;
+        select(active + Math.sign(event.deltaY));
+        window.setTimeout(() => { wheelLocked = false; }, 430);
+      }, { passive: false });
+
+      stage.addEventListener('pointerdown', event => {
+        if (event.pointerType === 'mouse' && event.button !== 0) return;
+        pointerStartY = event.clientY;
+        pointerStartX = event.clientX;
+      });
+      stage.addEventListener('pointerup', event => {
+        if (pointerStartY === null) return;
+        const dy = event.clientY - pointerStartY;
+        const dx = event.clientX - pointerStartX;
+        pointerStartY = null;
+        pointerStartX = null;
+        if (Math.abs(dy) > 38 && Math.abs(dy) > Math.abs(dx) * .8) {
+          select(active + (dy < 0 ? 1 : -1));
+        }
+      });
+      stage.addEventListener('pointercancel', () => {
+        pointerStartY = null;
+        pointerStartX = null;
+      });
+
+      window.addEventListener('hashchange', () => {
+        const index = slugs.indexOf(location.hash.slice(1));
+        if (index >= 0) select(index, { hash: false });
+      });
+
+      select(active, { hash: location.hash.length > 1 });
+    })();
+  </script>
+</body>
+</html>

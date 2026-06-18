@@ -1,0 +1,62 @@
+{
+  "id": "./",
+  "name": "The Moss Man — Moss Tree",
+  "short_name": "Moss Tree",
+  "description": "Explore the projects, worlds and pattern systems of The Moss Man and Blue $nake Studio.",
+  "start_url": "./index.html#bio",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#010509",
+  "theme_color": "#04101a",
+  "categories": ["art", "education", "music", "portfolio"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Meta-Pet",
+      "short_name": "Meta-Pet",
+      "url": "./index.html#meta-pet"
+    },
+    {
+      "name": "Moss 60",
+      "short_name": "Moss 60",
+      "url": "./index.html#moss-60"
+    },
+    {
+      "name": "Black Omen",
+      "short_name": "Black Omen",
+      "url": "./index.html#black-omen"
+    }
+  ]
+}
