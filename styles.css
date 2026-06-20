@@ -1283,3 +1283,124 @@ button:focus-visible, a:focus-visible {
   .start-card span, .start-card strong { color: #111; text-shadow: none; }
   .start-card p { color: #333; }
 }
+
+/* ─── Skip link ─────────────────────────────────────────────────────────────── */
+.skip-link {
+  position: fixed;
+  top: -200%;
+  left: 16px;
+  z-index: 9999;
+  background: var(--gold);
+  color: var(--night);
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 14px;
+  text-decoration: none;
+  transition: top .15s var(--ease-snappy);
+}
+.skip-link:focus {
+  top: 16px;
+  outline: 2px solid var(--night);
+  outline-offset: 2px;
+}
+
+/* ─── Focus rings ────────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ─── Gallery filter bar ─────────────────────────────────────────────────────── */
+.gallery-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+.filter-btn {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 16px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: border-color .18s, color .18s, background .18s;
+  line-height: 1.4;
+}
+.filter-btn:hover {
+  border-color: rgba(231,199,103,.5);
+  color: var(--gold);
+  background: rgba(231,199,103,.07);
+}
+.filter-btn.is-active {
+  border-color: var(--gold);
+  color: var(--gold-hot);
+  background: rgba(231,199,103,.14);
+}
+
+/* ─── Art card filter hidden state ──────────────────────────────────────────── */
+.art-card[hidden] { display: none; }
+
+/* ─── Image loading skeleton ─────────────────────────────────────────────────── */
+@keyframes skeletonPulse {
+  0%, 100% { background-position: 200% 0; }
+  50%       { background-position: -200% 0; }
+}
+.card-media:not(.loaded) {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,.04) 0%,
+    rgba(255,255,255,.09) 40%,
+    rgba(255,255,255,.04) 80%
+  );
+  background-size: 400% 100%;
+  animation: skeletonPulse 1.6s ease-in-out infinite;
+}
+.card-media.loaded {
+  animation: none;
+  background: none;
+}
+
+/* ─── Modal ARIA role additions ──────────────────────────────────────────────── */
+.modal-backdrop[role="dialog"] { }
+
+/* ─── 404 page ───────────────────────────────────────────────────────────────── */
+.not-found-shell {
+  position: relative;
+  z-index: 2;
+  width: min(860px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 110px 0 80px;
+}
+.not-found-card {
+  padding: clamp(28px, 5vw, 56px);
+  border: 1px solid rgba(0,245,255,.22);
+  border-radius: 34px;
+  background: linear-gradient(145deg, rgba(4,16,29,.9), rgba(2,7,13,.76));
+  box-shadow: 0 0 60px rgba(181,55,242,.14);
+  text-align: center;
+}
+.not-found-number {
+  font-size: clamp(88px, 18vw, 180px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -.08em;
+  background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan) 60%, var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 8px;
+}
+.not-found-card h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(26px, 5vw, 48px);
+  margin: 0 0 16px;
+  color: var(--ink);
+  letter-spacing: -.02em;
+}
+.not-found-card p { max-width: 520px; margin: 0 auto 28px; color: var(--muted); font-size: 17px; line-height: 1.6; }
+.not-found-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
