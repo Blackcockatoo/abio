@@ -277,6 +277,18 @@ window.BSS_GALLERY_ITEMS = [
     video: 'assets/10_video/video_source_04.mp4',
     tags: ['video', 'source', 'process', 'motion'],
     description: 'Additional video source for the Process / Sketchbook section and future Black Wing Crew visuals.'
+  },
+  {
+    id: 'video-studio-session-01',
+    title: 'B$S Studio Session 01',
+    series: 'Black Wing Crew',
+    medium: 'Video',
+    type: 'Video',
+    year: '2026',
+    mediaType: 'video',
+    video: 'assets/10_video/bss_studio_session_v1.mp4',
+    tags: ['video', 'Black Wing Crew', 'studio', 'session', 'process'],
+    description: 'Raw B$S studio session footage — process, mood and motion for Black Wing Crew visuals and future music edits.'
   }
 
 ];

@@ -29,6 +29,30 @@
   <link rel="icon" href="icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="icon-192.png" />
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    #intro-overlay {
+      position: fixed; inset: 0; z-index: 9998;
+      background: #010509;
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity .6s ease;
+    }
+    #intro-overlay.fade-out { opacity: 0; pointer-events: none; }
+    #intro-video {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      max-width: min(100vw, calc(100vh * 9 / 16));
+    }
+    .intro-btn-row {
+      position: absolute; bottom: 24px; right: 24px;
+      display: flex; gap: 12px;
+    }
+    .intro-btn {
+      padding: 8px 18px; border-radius: 999px; font-size: 14px;
+      cursor: pointer; border: 1px solid rgba(255,255,255,.4);
+      background: rgba(0,0,0,.6); color: #fff; backdrop-filter: blur(4px);
+    }
+    .intro-btn:hover { border-color: #fff; }
+  </style>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -57,6 +81,14 @@
   </script>
 </head>
 <body>
+  <div id="intro-overlay" role="dialog" aria-modal="true" aria-label="B$S intro video">
+    <video id="intro-video" src="assets/10_video/bss_intro_short_v1.mp4"
+      autoplay muted playsinline preload="auto"></video>
+    <div class="intro-btn-row">
+      <button class="intro-btn" id="intro-unmute" type="button" aria-label="Unmute intro">Unmute</button>
+      <button class="intro-btn" id="intro-skip" type="button">Skip</button>
+    </div>
+  </div>
   <a class="skip-link" href="#experience">Skip to content</a>
   <div class="shell">
     <header class="masthead">
@@ -87,6 +119,34 @@
 
   <script src="data/gallery-items.js"></script>
   <script src="script.js"></script>
+  <script>
+    (function() {
+      var KEY = 'bss_intro_seen';
+      var overlay = document.getElementById('intro-overlay');
+      var video   = document.getElementById('intro-video');
+      var unmute  = document.getElementById('intro-unmute');
+      var skip    = document.getElementById('intro-skip');
+
+      function dismiss() {
+        overlay.classList.add('fade-out');
+        video.pause();
+        setTimeout(function() { overlay.style.display = 'none'; }, 650);
+        sessionStorage.setItem(KEY, '1');
+      }
+
+      if (sessionStorage.getItem(KEY)) {
+        overlay.style.display = 'none';
+      } else {
+        video.addEventListener('ended', dismiss);
+        skip.addEventListener('click', dismiss);
+        unmute.addEventListener('click', function() {
+          video.muted = !video.muted;
+          unmute.textContent = video.muted ? 'Unmute' : 'Mute';
+          unmute.setAttribute('aria-label', video.muted ? 'Unmute intro' : 'Mute intro');
+        });
+      }
+    })();
+  </script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(() => {});
