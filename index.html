@@ -144,6 +144,23 @@
           unmute.textContent = video.muted ? 'Unmute' : 'Mute';
           unmute.setAttribute('aria-label', video.muted ? 'Unmute intro' : 'Mute intro');
         });
+        video.play().catch(function() {
+          // Autoplay blocked — show tap-to-play state
+          unmute.textContent = 'Tap to play';
+          unmute.setAttribute('aria-label', 'Tap to play intro');
+          unmute.onclick = function() {
+            video.muted = true;
+            video.play();
+            unmute.textContent = 'Unmute';
+            unmute.setAttribute('aria-label', 'Unmute intro');
+            unmute.onclick = null;
+            unmute.addEventListener('click', function() {
+              video.muted = !video.muted;
+              unmute.textContent = video.muted ? 'Unmute' : 'Mute';
+              unmute.setAttribute('aria-label', video.muted ? 'Unmute intro' : 'Mute intro');
+            });
+          };
+        });
       }
     })();
   </script>
