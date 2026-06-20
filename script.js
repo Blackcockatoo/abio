@@ -342,6 +342,7 @@
   let wheelLocked = false;
   let pointerStartY = null;
   let pointerStartX = null;
+  let lastFocused = null;
 
   function escapeHtml(value = '') {
     return String(value)
@@ -358,14 +359,14 @@
 
   function mediaPreview(item) {
     if (item.mediaType === 'video') {
-      return `<video class="card-media" src="${escapeHtml(item.video)}" muted preload="metadata" playsinline></video>`;
+      return `<video class="card-media lazy-video" data-src="${escapeHtml(item.video)}" muted preload="none" playsinline></video>`;
     }
     return `<img class="card-media" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" loading="lazy" />`;
   }
 
   function artCard(item) {
     return `
-      <article class="art-card">
+      <article class="art-card" data-series="${escapeHtml(item.series)}">
         <button type="button" data-art-id="${escapeHtml(item.id)}">
           ${mediaPreview(item)}
           <div class="art-body">
@@ -385,6 +386,15 @@
     return `<div class="links-row">${links.map(link => `<a class="project-link ${link.className || ''}" href="${escapeHtml(link.href)}"${externalAttrs(link.href)}>${escapeHtml(link.label)}</a>`).join('')}</div>`;
   }
 
+  function filterBar(sectionItems) {
+    const series = [...new Set(sectionItems.map(i => i.series))];
+    if (series.length < 2) return '';
+    return `
+      <div class="gallery-filter-bar" role="group" aria-label="Filter by series">
+        <button class="filter-btn is-active" data-filter="all">All</button>
+        ${series.map(s => `<button class="filter-btn" data-filter="${escapeHtml(s)}">${escapeHtml(s)}</button>`).join('')}
+      </div>`;
+  }
 
   function startHereAudience() {
     const cards = [
@@ -489,17 +499,8 @@
     const room = galleryRooms.find(candidate => candidate.slug === roomSlug);
     if (!room) return;
     const roomItems = getRoomItems(room);
-    let modal = document.querySelector('.modal-backdrop');
-    if (!modal) {
-      modal = document.createElement('div');
-      modal.className = 'modal-backdrop';
-      modal.innerHTML = '<div class="modal"><button class="modal-close" type="button">Close</button><div class="modal-content"></div></div>';
-      document.body.appendChild(modal);
-      modal.querySelector('.modal-close').addEventListener('click', () => modal.classList.remove('open'));
-      modal.addEventListener('click', event => { if (event.target === modal) modal.classList.remove('open'); });
-      document.addEventListener('keydown', event => { if (event.key === 'Escape') modal.classList.remove('open'); });
-    }
-    modal.querySelector('.modal-content').innerHTML = `
+    const backdrop = getOrCreateModal();
+    backdrop.querySelector('.modal-content').innerHTML = `
       <div class="room-modal-head">
         <p class="eyebrow">${escapeHtml(room.number)} · ${escapeHtml(room.eyebrow)}</p>
         <h2>${escapeHtml(room.title)}</h2>
@@ -516,13 +517,13 @@
       </div>
       <div class="gallery-grid room-modal-grid">${roomItems.map(artCard).join('')}</div>
     `;
-    modal.querySelectorAll('[data-art-id]').forEach(button => {
+    backdrop.querySelectorAll('[data-art-id]').forEach(button => {
       button.addEventListener('click', () => {
         const item = items.find(candidate => candidate.id === button.dataset.artId);
         if (item) openModal(item);
       });
     });
-    modal.classList.add('open');
+    activateModal(backdrop);
   }
 
 
@@ -569,6 +570,7 @@
                 <p class="eyebrow">Selected works</p>
                 <h2>${escapeHtml(galleryTitle)}</h2>
               </div>
+              ${filterBar(sectionItems)}
               <div class="gallery-grid">${sectionItems.map(artCard).join('')}</div>
             </section>` : ''}
         </div>
@@ -599,6 +601,7 @@
 
   function buildPanels() {
     panelWrap.innerHTML = sections.map(panelTemplate).join('');
+
     panelWrap.querySelectorAll('[data-art-id]').forEach(button => {
       button.addEventListener('click', () => {
         const item = items.find(candidate => candidate.id === button.dataset.artId);
@@ -613,6 +616,54 @@
         event.preventDefault();
         select(Number(anchor.dataset.jumpIndex), { focus: true });
       });
+    });
+
+    // Gallery series filter
+    panelWrap.querySelectorAll('.gallery-filter-bar').forEach(bar => {
+      bar.addEventListener('click', event => {
+        const btn = event.target.closest('.filter-btn');
+        if (!btn) return;
+        const filter = btn.dataset.filter;
+        bar.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('is-active', b === btn));
+        const grid = bar.nextElementSibling;
+        if (grid) {
+          grid.querySelectorAll('.art-card').forEach(card => {
+            card.hidden = filter !== 'all' && card.dataset.series !== filter;
+          });
+        }
+      });
+    });
+
+    // Lazy-load video thumbnails via IntersectionObserver
+    if ('IntersectionObserver' in window) {
+      const videoObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          const video = entry.target;
+          if (entry.isIntersecting && !video.src && video.dataset.src) {
+            video.src = video.dataset.src;
+            video.preload = 'metadata';
+            videoObserver.unobserve(video);
+          }
+        });
+      }, { rootMargin: '300px' });
+      panelWrap.querySelectorAll('.lazy-video').forEach(v => videoObserver.observe(v));
+    } else {
+      // Fallback: set src immediately
+      panelWrap.querySelectorAll('.lazy-video').forEach(v => {
+        if (v.dataset.src) { v.src = v.dataset.src; v.preload = 'metadata'; }
+      });
+    }
+
+    // Image skeleton — mark loaded images immediately, others on load event
+    panelWrap.querySelectorAll('.card-media').forEach(media => {
+      if (media.tagName === 'IMG') {
+        if (media.complete && media.naturalWidth) {
+          media.classList.add('loaded');
+        } else {
+          media.addEventListener('load', () => media.classList.add('loaded'), { once: true });
+          media.addEventListener('error', () => media.classList.add('loaded'), { once: true });
+        }
+      }
     });
   }
 
@@ -650,21 +701,74 @@
     if (changed && status) status.textContent = `${sections[active].label} selected`;
   }
 
-  function openModal(item) {
-    let modal = document.querySelector('.modal-backdrop');
-    if (!modal) {
-      modal = document.createElement('div');
-      modal.className = 'modal-backdrop';
-      modal.innerHTML = '<div class="modal"><button class="modal-close" type="button">Close</button><div class="modal-content"></div></div>';
-      document.body.appendChild(modal);
-      modal.querySelector('.modal-close').addEventListener('click', () => modal.classList.remove('open'));
-      modal.addEventListener('click', event => { if (event.target === modal) modal.classList.remove('open'); });
-      document.addEventListener('keydown', event => { if (event.key === 'Escape') modal.classList.remove('open'); });
+  function getOrCreateModal() {
+    let backdrop = document.querySelector('.modal-backdrop');
+    if (!backdrop) {
+      backdrop = document.createElement('div');
+      backdrop.className = 'modal-backdrop';
+      backdrop.setAttribute('role', 'dialog');
+      backdrop.setAttribute('aria-modal', 'true');
+      backdrop.setAttribute('aria-label', 'Detail view');
+      backdrop.innerHTML = '<div class="modal"><button class="modal-close" type="button" aria-label="Close">Close ✕</button><div class="modal-content"></div></div>';
+      document.body.appendChild(backdrop);
+
+      function closeModal() {
+        const video = backdrop.querySelector('video');
+        if (video) { video.pause(); video.currentTime = 0; }
+        backdrop.classList.remove('open');
+        if (backdrop._trapHandler) {
+          backdrop.removeEventListener('keydown', backdrop._trapHandler);
+          backdrop._trapHandler = null;
+        }
+        if (lastFocused) { lastFocused.focus({ preventScroll: true }); lastFocused = null; }
+      }
+
+      backdrop.querySelector('.modal-close').addEventListener('click', closeModal);
+      backdrop.addEventListener('click', event => { if (event.target === backdrop) closeModal(); });
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && backdrop.classList.contains('open')) closeModal();
+      });
+      backdrop._close = closeModal;
     }
+    return backdrop;
+  }
+
+  function activateModal(backdrop) {
+    lastFocused = document.activeElement;
+    backdrop.classList.add('open');
+
+    const modalEl = backdrop.querySelector('.modal');
+    const getFocusable = () => [...modalEl.querySelectorAll(
+      'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )];
+
+    const focusable = getFocusable();
+    if (focusable.length) focusable[0].focus({ preventScroll: true });
+
+    function trapHandler(event) {
+      if (event.key !== 'Tab' || !backdrop.classList.contains('open')) return;
+      const focusable = getFocusable();
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault(); last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault(); first.focus();
+      }
+    }
+
+    if (backdrop._trapHandler) backdrop.removeEventListener('keydown', backdrop._trapHandler);
+    backdrop._trapHandler = trapHandler;
+    backdrop.addEventListener('keydown', trapHandler);
+  }
+
+  function openModal(item) {
+    const backdrop = getOrCreateModal();
     const media = item.mediaType === 'video'
       ? `<video src="${escapeHtml(item.video)}" controls preload="metadata" playsinline></video>`
       : `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" />`;
-    modal.querySelector('.modal-content').innerHTML = `
+    backdrop.querySelector('.modal-content').innerHTML = `
       ${media}
       <div class="modal-body">
         <div class="meta-line">${escapeHtml(item.series)} · ${escapeHtml(item.medium)} · ${escapeHtml(item.year)}</div>
@@ -673,7 +777,11 @@
         <div class="tags">${(item.tags || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>
       </div>
     `;
-    modal.classList.add('open');
+    activateModal(backdrop);
+    if (item.mediaType === 'video') {
+      const video = backdrop.querySelector('video');
+      if (video) video.play().catch(() => {});
+    }
   }
 
   document.addEventListener('keydown', event => {
